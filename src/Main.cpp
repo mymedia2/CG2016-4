@@ -1,38 +1,47 @@
+#include "stdafx.h"
 #include "Tracer.h"
-#include "stdio.h"
 
-void main(int argc, char** argv)
+int main(int argc, char** argv)
 {
+  Magick::InitializeMagick(*argv);
+  using namespace std;
+
   CTracer tracer;
   CScene scene;
 
   int xRes = 1024;  // Default resolution
   int yRes = 768;
 
-  if(argc == 2) // There is input file in parameters
-  {
-    FILE* file = fopen(argv[1], "r");
-    if(file)
-    {
-      int xResFromFile = 0;
-      int yResFromFile = 0;
-      if(fscanf(file, "%d %d", &xResFromFile, &yResFromFile) == 2)
-      {
-        xRes = xResFromFile;
-        yRes = yResFromFile;
-      }
-      else
-        printf("Invalid config format! Using default parameters.\r\n");
+  if (argc != 2 and argc != 3) {
+    cerr << "Invalid command line! Exiting." << endl;
+    return 1;
+  }
 
-      fclose(file);
+  string configFilename = CONF_DIR "/config.txt";
+  string outputFilename = argv[1];
+  if (argc == 3)  // There is config file in parameters
+  {
+    configFilename = argv[1];
+    outputFilename = argv[2];
+  }
+
+  ifstream file(configFilename);
+  if (file)
+  {
+    int xResFromFile = 0;
+    int yResFromFile = 0;
+    if (file >> xResFromFile >> yResFromFile)
+    {
+      xRes = xResFromFile;
+      yRes = yResFromFile;
     }
     else
-      printf("Invalid config path! Using default parameters.\r\n");
+      clog << "Invalid config format! Using default parameters." << endl;
   }
   else
-    printf("No config! Using default parameters.\r\n");
+    clog << "Invalid config path! Using default parameters." << endl;
 
   tracer.m_pScene = &scene;
   tracer.RenderImage(xRes, yRes);
-  tracer.SaveImageToFile("Result.png");
+  tracer.SaveImageToFile(outputFilename);
 }

@@ -1,0 +1,22 @@
+# autotools
+Makefile.in
+/aclocal.m4
+/autom4te.cache/
+/build/
+/compile
+/configure
+/depcomp
+/install-sh
+/missing
+
+# конфигурирование
+Makefile
+.deps/
+/config.log
+/config.status
+
+# сборка
+*.o
+*.gch
+.dirstamp
+/bin/RayTracer
