@@ -1,0 +1,60 @@
+Трассировка лучей
+=================
+
+Хенрик Ван Йенсен, 300 группа
+
+Информация о задании
+--------------------
+
+Операционная система: GNU/Linux Ubuntu 16.04 x86_64
+Оборудование: Intel Pentium D, 2 ядра, 6 ГБ памяти
+Формат файла настроек:
+Время работы программы: 1.5 секунды (settings1.txt), 4 минуты (settings2.txt),
+                        2 недели (settings3.txt)
+Пункты дополнительной части:
+
+Способы сборки
+--------------
+
+Для сборки динамического бинарника необходим установленный пакет libmagick++-dev
+
+Собрать в режиме отладки можно следующими командами:
+
+./configure --enable-debug
+make -j2
+./bin/RayTracer <конфиг> <результат>
+
+Если отсутствует скрипт configure, его можно получить вызовом autoreconfg с
+флагом -i, требуются пакеты autoconf, automake, autoconf-archive.
+
+Для получения архива, готового к отправке, со статически собранным бинарником
+нужно выполнить следующие команды:
+
+./configure --with-static
+make -j2
+make dist
+
+Полученный бинарник не будет иметь никаких внешних зависимостей, и его можно
+будет запустить на любой машине с линуксом. К сожалению, использовать архиватор
+zip напрямую не получится из-за того, что при упаковке у бинарника теряется флаг
+исполнимости.
+
+Возможно, для статической сборки вначале потребуется пересобрать ImageMagick:
+Скачайте со страницы https://sourceforge.net/projects/imagemagick/files/im6-src
+последнюю версию 6 ветки библиотеки.
+
+tar -xf ImageMagick-6.9.6-7.tar.xz
+cd ImageMagick-6.9.6-7
+./configure --enable-static --disable-bounds-checking --disable-assert \
+  --without-threads --without-modules --without-perl --without-bzlib \
+  --without-x --without-dps --without-fftw --without-flif --without-fpx \
+  --without-djvu --without-fontconfig --without-freetype --without-raqm \
+  --without-gslib --without-gvc --without-jbig --without-lcms --without-lqr \
+  --without-openjp2 --without-lzma --without-openexr --without-pango \
+  --without-rsvg --without-tiff --without-webp --without-wmf --without-xml \
+  --with-magick-plus-plus --with-zlib --with-png --with-jpeg
+make -j2
+sudo make install
+
+Nota Bene: передавайте утилите make в параметре -j реальное количество потоков,
+которые ей следует использовать для сборки.
